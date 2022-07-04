@@ -1,0 +1,55 @@
+{
+    "__class__": "Manejador",
+    "pacientes": [
+        {
+            "__class__": "Paciente",
+            "__atributos__": {
+                "nombre": "Mateo",
+                "apellido": "Castro",
+                "telefono": "4213231",
+                "altura": 177,
+                "peso": 69.0
+            }
+        },
+        {
+            "__class__": "Paciente",
+            "__atributos__": {
+                "nombre": "Ignacio",
+                "apellido": "Colome",
+                "telefono": "323232",
+                "altura": 180,
+                "peso": 67.0
+            }
+        },
+        {
+            "__class__": "Paciente",
+            "__atributos__": {
+                "nombre": "Juan Roman",
+                "apellido": "Riquelme",
+                "telefono": "264101010",
+                "altura": 190,
+                "peso": 85.0
+            }
+        },
+        {
+            "__class__": "Paciente",
+            "__atributos__": {
+                "nombre": "Sancho",
+                "apellido": "Panza",
+                "telefono": "2900001",
+                "altura": 170,
+                "peso": 95.0
+            }
+        },
+        {
+            "__class__": "Paciente",
+            "__atributos__": {
+                "nombre": "Flaco",
+                "apellido": "Delgado",
+                "telefono": "2234401",
+                "altura": 180,
+                "peso": 57.0
+            }
+        }
+    ]
+}
