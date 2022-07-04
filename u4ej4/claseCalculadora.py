@@ -1,22 +1,15 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Feb 29 23:03:53 2020
-
-@author: morte
-"""
-from claseFraccion import Fraccion
 from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk
 from functools import partial
+
+from claseFracciones import Fraccion
 class Calculadora(object):
     __ventana=None
     __operador=None
     __panel=None
     __operadorAux=None
-    __primeraFraccion=None
-    __segundaFraccion=None
-    __dividendo=None
-    __divisor=None
+    __primerOperando=None
+    __segundoOperando=None
     def __init__(self):
         self.__ventana = Tk()
         self.__ventana.title('Tk-Calculadora')
@@ -29,7 +22,6 @@ class Calculadora(object):
         self.__panel = StringVar()
         self.__operador=StringVar()
         self.__operadorAux=None
-
         operatorEntry=ttk.Entry(mainframe, width=10, textvariable=self.__operador, justify='center', state='disabled')
         operatorEntry.grid(column=1, row=1, columnspan=1, sticky=(W,E))
         panelEntry = ttk.Entry(mainframe, width=20, textvariable=self.__panel, justify='right',state='disabled')
@@ -49,69 +41,57 @@ class Calculadora(object):
         ttk.Button(mainframe, text='*', command=partial(self.ponerOPERADOR, '*')).grid(column=1, row=7, sticky=W)
         ttk.Button(mainframe, text='%', command=partial(self.ponerOPERADOR, '%')).grid(column=2, row=7, sticky=W)
         ttk.Button(mainframe, text='=', command=partial(self.ponerOPERADOR, '=')).grid(column=3, row=7, sticky=W)
-        ttk.Button(mainframe, text='/', command=self.ponerBARRA).grid(column=1, row=8, sticky=W)
-        ttk.Button(mainframe, text='Limpiar', command=self.borrarPanel).grid(column=2, row=8, sticky=W)
-
+        ttk.Button(mainframe, text='/', command=partial(self.ponerNUMERO, '/')).grid(column=1, row=8, sticky=W)
         self.__panel.set('0')
         panelEntry.focus()
         self.__ventana.mainloop()
-    
-    def ponerNUMERO(self, num):
-        if self.__operadorAux == None:
+    def ponerNUMERO(self, numero):
+        if self.__operadorAux==None:
             valor = self.__panel.get()
-            self.__panel.set(valor+num)
-        else: 
-            self.__operadorAux = None
-            self.__panel.set(num)
-    
-    def borrarPanel(self):
-        self.__panel.set('')
-        self.__operador.set('')
-        self.__primeraFraccion = None
-        self.__segundaFraccion= None
-
-    def resolverOperacion(self, fraccion1, fraccion2, operacion):
-        resul = 0
-        if operacion == '+':
-            resul = fraccion1+fraccion2
-        elif operacion == '-':
-            resul = fraccion1 - fraccion2
-        elif operacion == '*':
-            resul = fraccion1*fraccion2
-        elif operacion == '%':
-            resul = fraccion1/fraccion2
-        resul.simplificar()
-        self.__panel.set(str(resul))
-        self.__primeraFraccion = resul
-
-    def ponerOPERADOR(self, op):
-        if op == '=':
-            if isinstance(self.__primeraFraccion, Fraccion):
-                operacion = self.__operadorAux
-                self.__divisor = int(self.__panel.get())
-                self.__segundaFraccion = Fraccion(self.__dividendo, self.__divisor)
-                print(operacion)
-                self.resolverOperacion(self.__primeraFraccion, self.__segundaFraccion, operacion)
-                
-            else:
-                messagebox.showerror(title='Faltan fracciones', message='No ha ingresado dos fracciones')
-                self.borrarPanel()
+            self.__panel.set(valor+numero)
         else:
-            
-            divisor = self.__panel.get()       
-            self.__divisor = int(divisor)
-            self.__primeraFraccion = Fraccion(self.__dividendo, self.__divisor)
-            self.__panel.set('')
-            self.__operador.set(op)
-            self.__operadorAux = op
+            self.__operadorAux=None
+            valor=self.__panel.get()
+            self.__primerOperando=Fraccion(valor)
+            self.__panel.set(numero)
+    def borrarPanel(self):
+        self.__panel.set('0')
+    def resolverOperacion(self, operando1, operacion, operando2):
+        resultado=0
+        if operacion=='+':
+            resultado=operando1+operando2
+        else:
+            if operacion=='-':
+                resultado=operando1-operando2
+            else:
+                if operacion=='*':
+                    resultado=operando1*operando2
+                else:
+                    if operacion=='%':
+                        resultado=operando1/operando2
+        resultado.simplificar()
+        self.__panel.set(str(resultado))
+    def ponerOPERADOR(self, op):
+        if op=='=':
+            operacion=self.__operador.get()
+            self.__segundoOperando=Fraccion(self.__panel.get())
+            self.resolverOperacion(self.__primerOperando, operacion, self.__segundoOperando)
+            self.__operador.set('')
+            self.__operadorAux=None
+        else:
+            if self.__operador.get()=='':
+                self.__operador.set(op)
+                self.__operadorAux=op
+            else:
+                operacion=self.__operador.get()
+                self.__segundoOperando=Fraccion(self.__panel.get())
+                self.resolverOperacion(self.__primerOperando, operacion, self.__segundoOperando)
+                self.__operador.set(op)
+                self.__operadorAux=op
+def main():
+    calculadora=Calculadora()
+    
+if __name__=='__main__':
+    main()
 
-    def ponerNUMERO(self, num):
-        valor = self.__panel.get()
-        self.__panel.set(valor+num)
-
-
-    def ponerBARRA(self):
-        self.__operador.set('/')
-        self.__dividendo = int(self.__panel.get())
-        self.__panel.set('')
 
